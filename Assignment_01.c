@@ -81,12 +81,13 @@ char* InfixtoPostfix(char *infix){
         j++;
     }
     postfix[j]='\0';
+    
     return postfix;
 }
 
 int main()
 {
-    char *infix;
+    char infix[50];
     printf("Enter the expression: ");
     scanf("%s",infix);
     
