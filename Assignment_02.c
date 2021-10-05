@@ -1,97 +1,86 @@
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-#define size 10
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
 
-char *arr;
-int top=-1;
+#define SIZE 40
 
-int isFull(){
-    if(top==size-1)
-        return 1;
-    else
-        return 0;
-}
+int pop();
+void push(int);
 
-int isEmpty(){
-    if(top==-1)
-        return 1;
-    else
-        return 0;
-}
+char postfix[SIZE];
+int stack[SIZE], top = -1;
 
-void push(char n){
-    if(isFull())
-    printf("\nStack is full!\n");
-    else{
-        top=top+1;
-        arr[top]=n;
-    }
-}
-char pop(){
-    if(isEmpty()){
-    printf("\nStack is empty!\n");
-    return -1;
-    }
-    else{
-        char val=arr[top];
-        top--;
-        return val;
-    }
-}
-int operator(char ch){
-    if(ch=='+'||ch=='-'||ch=='*'||ch=='/')
-    return 1;
-    else
-    return 0;
-}
-int presidence(char ch){
-    if(ch=='/'||ch=='*')
-    return 2;
-    else if (ch=='+'||ch=='-')
-    return 1;
-    else
-    return 0;
-}
-char* InfixtoPostfix(char *infix){
-    int i=0,j=0;
-    int len=strlen(infix);
-    char postfix=(char)malloc(len*sizeof(char));
-    while(infix[i]!='\0')
-    {
-        if(operator(infix[i])==0){
-            postfix[j]=infix[i];
-            j++;
-            i++;
-        }
-        else{
-            if(presidence(infix[i])>presidence(arr[top])){
-                push(infix[i]);
-                i++;
-            }
-            else{
-                postfix[j]=pop();
-                j++;
-            }
-        }
-    }
-    while (!isEmpty())
-    {
-        postfix[j]=pop();
-        j++;
-    }
-    postfix[j]='\0';
-    return postfix;
+int Evoluat(){
+    int i, a, b, result, val;
+	char ch;
+	
+	for(i=0; i<SIZE; i++)
+	{
+		stack[i] = -1;
+	}
+
+	for(i=0; postfix[i] != '\0'; i++)
+	{
+		ch = postfix[i];
+
+		if(isdigit(ch))
+		{
+			push(ch-'0');
+		}
+		else if(ch == '+' || ch == '-' || ch == '*' || ch == '/')
+		{
+			b = pop();
+			a = pop();
+			
+			switch(ch)
+			{
+				case '+': result = a+b;
+					  break;
+				case '-': result = a-b;
+					  break;
+				case '*': result = a*b;
+					  break;
+				case '/': result = a/b;
+					  break;
+			}
+			
+			push(result);
+		}		
+	
+	}
+	val = pop();
+    return val;
 }
 
 int main()
 {
-    char *infix;
-    printf("Enter the expression: ");
-    scanf("%s",infix);
-    
-    arr=(char*)malloc(size*sizeof(char));
-    printf("postfix is %s", InfixtoPostfix(infix));
-    free(arr);
+	printf("\nEnter a postfix expression: ");
+	scanf("%s",postfix);
 
-    return 0;
+	int val = Evoluat();
+	printf("\nThe postfix evaluation of '%s' is: %d\n",postfix,val);
+	
+	return 0;
+}
+
+void push(int n)
+{
+	if (top < SIZE -1)
+	{
+		stack[++top] = n;
+	}
+	else
+		printf("Stack is full!\n");
+}
+int pop()
+{	
+	int n;
+	if (top > -1)
+	{
+		n = stack[top];
+		stack[top--] = -1;
+		return n;
+	}
+	else
+		printf("Stack is empty!\n");
+}
